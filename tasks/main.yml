@@ -1,0 +1,9 @@
+- name: Install Logstash (RedHat)
+  include: install-redhat.yml
+  when: ansible_os_family == 'RedHat'
+
+- fail:
+    msg: Only RedHat is currently supported
+  when: ansible_os_family not in ['RedHat']
+
+- include: setup-logstash.yml

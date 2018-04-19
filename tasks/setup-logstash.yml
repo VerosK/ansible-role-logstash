@@ -1,0 +1,79 @@
+
+- name: Create logstash settings dir
+  file:
+    name: '{{ logstash_settings_dir }}'
+    state: 'directory'
+
+- name: Create logstash config dir
+  file:
+    name: '{{ logstash_config_dir }}'
+    state: 'directory'
+
+- name: Create logstash log dir
+  file:
+    name: '{{ logstash_log_path }}'
+    state: 'directory'
+    owner: '{{ logstash_user }}'
+    group: '{{ logstash_group }}'
+
+- name: Create logstash lib dir
+  file:
+    name: '{{ logstash_data_path }}'
+    state: 'directory'
+    owner: '{{ logstash_user }}'
+    group: '{{ logstash_group }}'
+
+- name: Provide logstash.config
+  template:
+    src: logstash.yml.j2
+    dest: '{{ logstash_settings_dir }}/logstash.yml'
+    backup: '{{ logstash_do_backups }}'
+  notify: restart logstash
+
+- name: Provide logstash log4j2 config
+  template:
+    src: log4j2.properties.j2
+    dest: '{{ logstash_settings_dir }}/log4j2.properties'
+    backup: '{{ logstash_do_backups }}'
+  notify: restart logstash
+
+- name: Provide logstash jvm.options
+  template:
+    src: jvm.options.j2
+    dest: '{{ logstash_settings_dir }}/jvm.options'
+    backup: '{{ logstash_do_backups }}'
+  notify: restart logstash
+
+- name: Provide initial logstash config
+  template:
+    src: '{{ item }}'
+    dest: '{{ logstash_config_dir }}/{{ item|basename }}'
+    backup: '{{ logstash_do_backups }}'
+  with_fileglob: templates/conf.d/*.conf
+
+- name: Create logstash service defaults
+  template:
+    src: logstash-defaults.j2
+    dest: '/etc/default/logstash'
+    backup: '{{ logstash_do_backups }}'
+  notify: restart logstash
+
+- name: Create logstash service
+  template:
+    src: logstash.service.j2
+    dest: '{{ logstash_systemd_unitfile }}'
+    backup: '{{ logstash_do_backups }}'
+  notify: restart logstash
+  register: _logstash_service
+
+- name: Make sure systemd found the config
+  systemd:
+    daemon_reload: true
+  when: _logstash_service|changed
+
+- name: Setup logstash service
+  service:
+    name: '{{ logstash_service_name }}'
+    state: '{{ logstash_service_state }}'
+    enabled: '{{ logstash_service_enabled }}'
+

@@ -1,0 +1,4 @@
+- name: Install Logstash RPM package
+  yum:
+    name: '{{ logstash_yum_package }}'
+    state: present

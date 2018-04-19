@@ -1,0 +1,40 @@
+# name of Logstash package
+logstash_yum_package: logstash
+
+logstash_group: logstash
+logstash_user: logstash
+
+
+# should we do config backups?
+logstash_do_backups: true
+
+# path config
+# Path to directory where to store the data (separate multiple locations by comma):
+logstash_configs:
+  - src: logstash.yml.j2
+    name: /etc/logstash/logstash.yml
+
+# service config
+logstash_service_name: logstash
+logstash_service_state: started
+logstash_service_enabled: true
+
+logstash_node_name: '{{ ansible_hostname }}'
+logstash_data_path: /var/lib/logstash/
+logstash_log_path: /var/log/logstash/
+logstash_archive_path: /var/spool/logstash-archive/
+logstash_log_format: plain
+
+logstash_address: "0.0.0.0"
+logstash_http_port: "9600"
+logstash_extra_config: ~
+
+logstash_elasticsearch_target: "127.0.0.1"
+
+logstash_settings_dir: /etc/logstash/
+logstash_config_dir: /etc/logstash/config.d/
+
+logstash_systemd_unitfile:
+    /etc/systemd/system/{{ logstash_service_name }}.service
+
+

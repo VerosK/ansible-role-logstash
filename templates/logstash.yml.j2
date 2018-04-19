@@ -1,0 +1,37 @@
+# {{ ansible_managed }}
+# This is main Logstash settings
+#------------------------------------ Node ------------------------------------
+node.name: '{{ logstash_node_name }}'
+#
+# ----------------------------------- Paths ------------------------------------
+#
+#
+path.config : '{{ logstash_config_dir }}'
+path.data: '{{ logstash_data_path }}'
+path.logs: '{{ logstash_log_path }}'
+log.format: '{{ logstash_log_format }}'
+#pipeline.workers: 1
+#pipeline.batch.size: 1
+#
+# ---------------------------------- Network -----------------------------------
+#
+# Set the bind address to a specific IP (IPv4 or IPv6):
+#
+http.host: '{{ logstash_address }}'
+http.port: {{ logstash_http_port }}
+#
+# For more information, consult the network module documentation.
+#
+# ---------------------------------- Extra -----------------------------------
+{% if logstash_extra_config is defined %}
+{{ logstash_extra_config }}
+#   ____________________________________
+#  / Ansible takes care of this config, \
+#  \ don't touch manually, please       /
+#   ------------------------------------
+#         \   ^__^
+#          \  (oo)\_______
+#             (__)\       )\/\
+#                  ||----w |
+#                  ||     ||
+{% endif %}
