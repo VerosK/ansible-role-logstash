@@ -29,6 +29,13 @@ logstash_address: "0.0.0.0"
 logstash_http_port: "9600"
 logstash_extra_config: ~
 
+logstash_with_redis_input: true
+logstash_with_tcp_input: true
+logstash_tcp_input_port: 4444
+logstash_with_syslog_input: false
+logstash_syslog_input_host: "127.0.0.1"
+logstash_syslog_input_port: 8514
+
 logstash_elasticsearch_target: "127.0.0.1"
 
 logstash_settings_dir: /etc/logstash/
